@@ -1,0 +1,68 @@
+public class Application9_9 
+{
+	public static void main(String args[])
+	{
+		WinGrid win=new WinGrid();
+		win.setBounds(100,100,390,360);
+	}
+
+}
+
+
+
+import javax.swing.*;
+import java.awt.*;
+public class WinGrid extends JFrame
+{
+   GridLayout grid;
+   Color back;
+   BackFocusListener listen;
+   WinGrid()
+   {
+	   back=Color.blue;
+	   grid=new GridLayout(20,20);
+	   setLayout(grid);
+	   JButton b[][]=new JButton[20][20];
+	   listen=new BackFocusListener();
+	   for(int i=0;i<20;i++)
+	   {
+		   for(int j=0;j<20;j++)
+		   {
+			   b[i][j]=new JButton();
+		       b[i][j].setBackground(back);
+		       b[i][j].addFocusListener(listen);
+               listen.setColor(back);
+               add(b[i][j]);
+		   }
+	   }
+   setVisible(true);
+   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+   validate();
+   }
+}
+
+
+
+import java.awt.event.*;
+import javax.swing.*;
+import java.awt.*;
+public class BackFocusListener implements FocusListener
+{
+  Color color;
+  public void setColor(Color c)
+  {
+	  color=c;
+  } 
+   
+  public void focusGained(FocusEvent e)
+  {
+	  JButton button=(JButton)e.getSource();
+	  button.setBackground(Color.red);
+  }
+
+  public void focusLost(FocusEvent e)
+  {
+	  JButton button=(JButton)e.getSource();
+	  button.setBackground(color);
+  }
+}

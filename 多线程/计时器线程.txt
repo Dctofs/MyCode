@@ -1,0 +1,49 @@
+import javax.swing.Timer;
+public class Application10_12 
+{
+	public static void main(String args[])
+	{
+		TimerListener listen=new TimerListener();
+		Thread inputLetter=new Thread(listen);
+		Timer timer=new Timer(300,listen);
+		timer.setInitialDelay(0);
+		timer.start();
+		inputLetter.start();
+	}
+	
+
+}
+
+
+import java.awt.event.*;
+import javax.swing.*;
+import java.util.Scanner;
+
+
+public class TimerListener extends JLabel implements ActionListener,Runnable
+{
+	int c=96;
+	Scanner read=new Scanner(System.in);
+	public void actionPerformed(ActionEvent e)
+	{
+		c++;
+		if(c>=97+26)
+			c=97;
+		System.out.print((char)c+":");
+	}
+	public void run()
+	{
+		while(true)
+		{
+			String str=read.nextLine();
+			char ch=str.charAt(0);
+			if(ch==c)
+				System.out.println("输入正确");
+			else
+				System.out.println("输入错误");
+			if(ch=='#')
+				return;
+		}
+	}
+		
+}

@@ -1,0 +1,173 @@
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+public class Client 
+{
+   public static void main (String args[])
+   {
+	   Scanner scanner=new Scanner(System.in);
+	   Socket mysocket=null;
+	   DataInputStream in=null;
+	   DataOutputStream out=null;
+	   Thread readData;
+	   Read read=null;
+	   try
+	   {
+		   mysocket=new Socket();
+		   read=new Read();
+		   readData=new Thread(read);
+		   System.out.print("输入服务器的IP:");
+		   String IP=scanner.nextLine();
+		   System.out.print("输入端口号:");
+		   int port=scanner.nextInt();
+		   if(mysocket.isConnected()){}
+		   else
+		   {
+			   InetAddress address=InetAddress.getByName(IP);
+			   InetSocketAddress socketAddress=new InetSocketAddress(address,port);
+			   mysocket.connect(socketAddress);
+			   in=new DataInputStream(mysocket.getInputStream());
+			   out=new DataOutputStream(mysocket.getOutputStream());
+			   read.setDataInputStream(in);
+			   readData.start();
+		   }
+	   }
+	   catch(Exception e)
+	   {
+		   System.out.println("服务器已断开"+e);
+	   }
+	   System.out.print("输入圆的半径（放弃请输入N：）");
+	   while(scanner.hasNext())
+	   {
+		   double radius=0;
+		   try
+		   {
+			   radius=scanner.nextDouble();
+		   }
+		   catch(InputMismatchException exp)
+		   {
+			   System.exit(0);
+		   }
+		   try
+		   {
+			   out.writeDouble(radius);		   
+		   }
+		   catch(Exception e){};
+	   }
+   }
+   
+   
+}
+
+import java.io.*;
+public class Read implements Runnable 
+{
+	DataInputStream in;
+	public void setDataInputStream(DataInputStream in)
+	{
+		this.in=in;
+	}
+	public void run()
+	{
+		double result=0;
+		while(true)
+		{
+			try
+			{
+				result=in.readDouble();
+				System.out.println("圆的面积:"+result);
+		        System.out.print("输入圆的半径（放弃请输入N）");
+			}
+			catch(IOException e)
+			{
+				System.out.println("与服务器已断开"+e);
+                break;
+			}
+			
+		}
+	}
+	
+
+}
+
+
+
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+public class Server 
+{
+	public static void main(String args[])
+	{
+		ServerSocket server=null;
+		Socket you=null;
+		while(true)
+		{
+			try
+			{
+				server=new ServerSocket(2010);
+			}
+			catch(IOException e1)
+			{
+			 System.out.println("正在监听");
+			}
+			try
+			{
+				System.out.println("等待客户呼叫");
+				you=server.accept();
+				System.out.println("客户的地址:"+you.getInetAddress());
+			}
+			catch(IOException e)
+			{
+				System.out.println("正在等待客户");
+			}
+			if(you!=null)
+			{
+				ServerThread threadForClient=new ServerThread(you);
+				threadForClient.start();
+			}
+		}
+	}
+
+}
+
+
+import java.io.*;
+import java.net.*;
+public class ServerThread extends Thread 
+{ 
+  Socket socket;
+  DataOutputStream out=null;
+  DataInputStream in=null;
+  String s=null;
+  ServerThread(Socket t)
+  {
+	  socket=t;
+	  try
+	  {  
+		   out=new DataOutputStream(socket.getOutputStream());
+		   in=new DataInputStream(socket.getInputStream());
+	  }
+	  catch(IOException e){}
+  }
+  public void run()
+  {
+	  while(true)
+	  {
+		  try
+		  {
+			double r=in.readDouble();
+			double area=Math.PI*r*r;
+			out.writeDouble(area);
+		  }
+		  catch(IOException e)
+		  {
+			  System.out.println("客户离开");
+			  return;
+		  }
+	  }
+  }
+  
+}

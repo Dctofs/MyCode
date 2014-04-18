@@ -1,0 +1,121 @@
+import java.net.*;
+import java.util.*;
+
+public class ComputerA 
+{
+	public static void main(String args[])
+	{
+		Scanner scanner=new Scanner(System.in);
+		Thread readData;
+		ReceiveLetter receiver=new ReceiveLetter(888);
+		try
+		{
+			readData=new Thread(receiver);
+			readData.start();
+			byte[]buffer=new byte[1];
+			InetAddress address=InetAddress.getByName("127.0.0.1");
+			DatagramPacket dataPack=new DatagramPacket(buffer,buffer.length,address,666);
+			DatagramSocket postman=new DatagramSocket();
+			System.out.print("输入发送给ComputerB的信息:");
+			while(scanner.hasNext())
+			{
+				String mess=scanner.nextLine();
+				buffer=mess.getBytes();
+				if(mess.length()==0)
+					System.exit(0);
+				buffer=mess.getBytes();
+				dataPack.setData(buffer);
+				postman.send(dataPack);
+				System.out.print("继续输入信息");
+			}
+		}
+		catch(Exception e)
+		{
+		  System.out.print(e);
+		}
+	}
+
+}
+
+
+
+
+import java.net.*;
+
+public class ReceiveLetter implements Runnable
+{
+	int port;
+	ReceiveLetter(int port)
+	{
+		this.port=port;
+	}
+	public void run()
+	{
+		DatagramPacket pack=null;
+		DatagramSocket postman=null;
+		byte data[]=new byte[8192];
+		try
+		{
+			pack=new DatagramPacket(data,data.length);
+			postman=new DatagramSocket(port);
+		}
+		catch(Exception e){}
+		while(true)
+		{
+			if(postman==null) break;
+			else
+			{
+				try
+				{
+					postman.receive(pack);
+					String message=new String(pack.getData(),0,pack.getLength());
+					System.out.printf("%25s\n", "收到："+message);
+				}
+				catch(Exception e){}
+			}
+		}
+	}
+
+}
+
+
+
+
+import java.net.*;
+import java.util.*;
+
+public class ComputerB 
+{
+	public static void main(String args[])
+	{
+		Scanner scanner=new Scanner(System.in);
+		Thread readData;
+		ReceiveLetter receiver=new ReceiveLetter(666);
+		try
+		{
+			readData=new Thread(receiver);
+			readData.start();
+			byte[]buffer=new byte[1];
+			InetAddress address=InetAddress.getByName("127.0.0.1");
+			DatagramPacket dataPack=new DatagramPacket(buffer,buffer.length,address,888);
+			DatagramSocket postman=new DatagramSocket();
+			System.out.print("输入发送给ComputerA的信息:");
+			while(scanner.hasNext())
+			{
+				String mess=scanner.nextLine();
+				buffer=mess.getBytes();
+				if(mess.length()==0)
+					System.exit(0);
+				buffer=mess.getBytes();
+				dataPack.setData(buffer);
+				postman.send(dataPack);
+				System.out.print("继续输入信息");
+			}
+		}
+		catch(Exception e)
+		{
+		  System.out.print(e);
+		}
+	}
+
+}

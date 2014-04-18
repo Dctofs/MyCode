@@ -1,0 +1,60 @@
+
+public class Application9_6 
+{
+  public static void main(String args[])
+  {
+	  java.awt.Window    Win=new
+	  WindowActionEvent();
+	  Win.setBounds(10,10,200,200);
+  }
+}
+
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+public class WindowActionEvent extends JFrame 
+{
+   JTextField text;
+   JButton button;
+   ActionListener textListener;
+   ActionListener buttonListener;
+   public WindowActionEvent()
+   {
+	   setLayout(new FlowLayout());
+	   text=new JTextField(10);
+	   button=new JButton("È·¶¨");
+	   add(text);
+	   add(button);
+	   textListener=new TextFieldListen();
+	   buttonListener=new ButtonListen();
+	   text.addActionListener(textListener);
+	   button.addActionListener(buttonListener);
+       setVisible(true);
+       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+   }
+}
+
+
+import java.awt.event.*;
+public class TextFieldListen implements ActionListener 
+{
+	public void actionPerformed(ActionEvent e)
+	{
+	  String str =e.getActionCommand();
+	  System.out.println(str+":"+str.length());
+	}
+
+}
+
+
+import java.awt.event.*;
+public class ButtonListen implements ActionListener 
+{
+	public void actionPerformed(ActionEvent e)
+	{
+	  String str =e.getActionCommand();
+	  System.out.println(str);
+	}
+
+}

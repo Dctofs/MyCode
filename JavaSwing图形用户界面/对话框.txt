@@ -1,0 +1,47 @@
+
+public class Application9_14
+{
+	public static void main(String args[])
+	{
+	UserDialog win=new UserDialog();
+	win.setTitle("带对话框的窗口");
+	win.setBounds(80,90,200,300);
+	}
+
+}
+
+import java.awt.event.*;
+import java.awt.*;
+import javax.swing.*;
+import java.util.*;
+
+public class UserDialog extends JFrame implements ActionListener
+{
+	JTextArea save;
+	JButton openInput;
+	UserDialog()
+	{
+		openInput=new JButton("弹出输入对话框");
+		save=new JTextArea();
+		add(openInput,BorderLayout.NORTH);
+		add(new JScrollPane(save),BorderLayout.CENTER);
+		openInput.addActionListener(this);
+		setVisible(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	public void actionPerformed(ActionEvent e)
+	{
+		String s=JOptionPane.showInputDialog(this,"账户名称","输入对话框",JOptionPane.PLAIN_MESSAGE);
+		if(s!=null)
+		{
+			int n=JOptionPane.showConfirmDialog(this,"确认"+s+"是否正确","确认对话框",JOptionPane.YES_NO_OPTION);
+		    if(n==JOptionPane.YES_OPTION);
+		    save.append("\n"+s);
+		}
+	}
+	
+}
+
+	
+	
+	

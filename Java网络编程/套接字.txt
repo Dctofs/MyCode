@@ -1,0 +1,87 @@
+import java.io.*;
+import java.net.*;
+
+public class Client 
+{
+	public static void main(String args[])
+	{
+		String []mess={"中国首都的名字？","法国是哪个洲的？","小提琴有几根弦"};
+		Socket clientSocket;
+		DataInputStream in=null;
+		DataOutputStream out=null;
+		try
+		{
+			String serverAdress="127.0.0.1";
+		    int port=2015;
+		clientSocket=new Socket(serverAdress,port);
+		in=new DataInputStream(clientSocket.getInputStream());
+		out=new DataOutputStream(clientSocket.getOutputStream());
+		for(int i=0;i<mess.length;i++)
+		{
+			out.writeUTF(mess[i]);
+			String s=in.readUTF();
+			System.out.println("客户收到的回答:"+s);
+			Thread.sleep(500);
+		}
+		}
+		catch(Exception e)
+		{
+			System.out.println("服务器已断开"+e);
+		}
+		
+		
+	}
+
+}
+
+
+import java.io.*;
+import java.net.*;
+
+
+public class Server 
+{
+	
+	public static void main (String args[])
+	{
+		String[]answer={"北京","欧洲","4根"};
+		ServerSocket serverForClient=null;
+		Socket socketOnServer=null;
+		DataOutputStream out=null;
+		DataInputStream in=null;
+		int port=2015;
+		try
+		{
+		  serverForClient=new ServerSocket(port);	
+		}
+		catch(IOException e1)
+		{
+			System.out.println(e1);
+		}
+		try
+		{
+			System.out.println("等待客户呼叫:");
+			socketOnServer=serverForClient.accept();
+			out=new DataOutputStream(socketOnServer.getOutputStream());
+			in=new DataInputStream(socketOnServer.getInputStream());
+			for(int i=0;i<answer.length;i++)
+			{
+				String s=in.readUTF();
+				System.out.println("服务器收到客户的提问:"+s);
+				out.writeUTF(answer[i]);
+				Thread.sleep(500);
+			}
+			
+		}
+		catch(Exception e)
+		{
+			System.out.println("客户已断开"+e);
+		}
+	}
+	
+
+}
+
+
+
+

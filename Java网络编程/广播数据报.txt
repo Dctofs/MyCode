@@ -1,0 +1,81 @@
+import java.net.*;
+
+public class BroadCast 
+{
+  String s="国庆放假时间是9月30日";
+  int port=5858;
+  InetAddress group=null;
+  MulticastSocket socket=null;
+  BroadCast()
+  {
+	  try
+	  {
+		  group=InetAddress.getByName("239.255.8.0");
+		  socket=new MulticastSocket(port);
+		  socket.setTimeToLive(1);
+		  socket.joinGroup(group);
+	  }
+	  catch(Exception e)
+	  {
+		  System.out.print("Error:"+e);
+	  }
+  }
+  public void play()
+  {
+	  while(true)
+	  {
+		try
+		{
+			DatagramPacket packet=null;
+			byte data[]=s.getBytes();
+			packet=new DatagramPacket(data,data.length,group,port);
+			System.out.println(new String(data));
+			socket.send(packet);
+			Thread.sleep(2000);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Error:"+e);
+		}
+	  }
+  }
+  public  static void main(String args[])
+  {
+	  new BroadCast().play();
+  }
+}
+
+
+
+import java.net.*;
+import java.util.*;
+
+public class Receiver 
+{
+	public static void main(String args[])
+	{
+		int port=5858;
+		InetAddress group=null;
+		MulticastSocket socket=null;
+		try
+		{
+			group=InetAddress.getByName("239.255.8.0");
+			socket=new MulticastSocket(port);
+			socket.joinGroup(group);
+		}
+		catch(Exception e){}
+		while(true)
+		{
+			byte data[]=new byte[8192];
+			DatagramPacket packet=null;
+			packet=new DatagramPacket(data,dta.length,group,port);
+			try
+			{
+				socket.receive(packet);
+				String message=new String(packet.getData(),0,packet.getLength());
+				System.out.println("接受的内容:\n"+message);
+			}
+		    catch(Exception e){}
+	   }
+    }
+}
